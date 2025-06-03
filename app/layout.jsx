@@ -1,18 +1,28 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
-import { Banner, Head } from 'nextra/components'
+import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
  
 export const metadata = {
-  // Define your metadata here
-  // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
+  applicationName: 'SJMCL',
+  appleWebApp: {
+    title: 'SJMCL Docs'
+  },
+  metadataBase: new URL('https://mc.sjtu.cn/sjmcl'),
+  other: {
+    'msapplication-TileColor': '#fff'
+  },
+  title: {
+    default: 'SJMC Launcher',
+    template: '%s | SJMCL'
+  },
 }
  
 // const banner = <Banner storageKey="some-key">Nextra 4.0 is released 🎉</Banner>
 const navbar = (
   <Navbar
-    logo={<b>SJMCL Docs</b>}
-    // ... Your additional navbar options
+    logo={<b>SJMCL</b>}
+    projectLink="https://github.com/UNIkeEN/SJMCL"
   />
 )
 const footer = <Footer>{new Date().getFullYear()} © SJMCL Team.</Footer>
