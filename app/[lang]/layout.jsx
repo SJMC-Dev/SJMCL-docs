@@ -1,7 +1,8 @@
-import { Footer, Layout, Navbar, LocaleSwitch } from 'nextra-theme-docs'
+import { Footer, Layout, Navbar, LastUpdated } from 'nextra-theme-docs'
 import { TitleFullWithLogo } from './components/logo-title'
-import { Head } from 'nextra/components'
+import { Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
+import { localeResources } from '../../locales'
 import 'nextra-theme-docs/style.css'
  
 export const metadata = {
@@ -18,27 +19,34 @@ export const metadata = {
     template: '%s | SJMCL'
   },
 }
-
-const navbar = (
-  <Navbar
-    logo={<TitleFullWithLogo />}
-    projectLink="https://github.com/UNIkeEN/SJMCL"
-  >
-    <LocaleSwitch />
-  </Navbar>
-)
-const footer = (
-  <Footer>
-    沪 ICP 备 05052060 号-7
-    <br/>
-    {new Date().getFullYear()} © SJMCL Team.
-  </Footer>
-)
  
 export default async function RootLayout({ children, params }) {
   const { lang } = await params
   let pageMap = await getPageMap(`/${lang}`)
+  const t = localeResources[lang || 'en'].translation
+
+  const navbar = (
+    <Navbar
+      logo={<TitleFullWithLogo />}
+      projectLink="https://github.com/UNIkeEN/SJMCL"
+    >
+    </Navbar>
+  )
+
+  const search = (
+    <Search
+      placeholder={t.search.placeholder}
+    />
+  )
   
+  const footer = (
+    <Footer>
+      沪 ICP 备 05052060 号-7
+      <br/>
+      {new Date().getFullYear()} © {t.footer.copyright}
+    </Footer>
+  )
+
   return (
     <html
       // Not required, but good for SEO
@@ -57,13 +65,16 @@ export default async function RootLayout({ children, params }) {
         <Layout
           // banner={banner}
           navbar={navbar}
+          search={search}
           pageMap={pageMap}
           docsRepositoryBase="https://github.com/UNIkeEN/SJMCL/tree/main"
           footer={footer}
-          i18n={[
-            { locale: 'en', name: 'English' },
-            { locale: 'zh', name: '中文' }
-          ]}
+          editLink={t.editLink}
+          feedback={{content: t.feedbackLink}}
+          lastUpdated={<LastUpdated>{t.lastUpdated}</LastUpdated>}
+          i18n={Object.entries(localeResources).map(([locale, value]) => ({
+            locale, name: value.display_name,
+          }))}
         >
           {children}
         </Layout>
