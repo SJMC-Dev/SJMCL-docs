@@ -7,6 +7,7 @@ const withNextra = nextra({
  
 // Export the final Next.js config with Nextra included
 export default withNextra({
+  basePath: '/docs-sjmcl',
   output: 'export',
   images: {
     unoptimized: true // mandatory, otherwise won't export
