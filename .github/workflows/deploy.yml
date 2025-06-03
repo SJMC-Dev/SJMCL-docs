@@ -32,7 +32,7 @@ jobs:
           DEPLOY_PROJECT: ${{ secrets.DEPLOY_PROJECT }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
         run: |
-          zip -r -j docs-sjmcl.zip out
+          zip -r docs-sjmcl.zip out
           ARTIFACT_HASH=$(sha256sum docs-sjmcl.zip | awk '{ print $1 }')
           DEPLOY_TIMESTAMP=$(date +%s)
           DEPLOY_HASH="${SECRET_KEY}${DEPLOY_TIMESTAMP}${ARTIFACT_HASH}"
