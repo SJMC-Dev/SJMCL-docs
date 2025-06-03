@@ -1,0 +1,55 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: |
+          apt-get update && apt-get install -y zip curl
+          npm install
+
+      - name: Build the project
+        run: npm run build
+
+      - name: Deploy to production server
+        env:
+          DEPLOY_API: ${{ secrets.DEPLOY_API }}
+          DEPLOY_PROJECT: ${{ secrets.DEPLOY_PROJECT }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        run: |
+          zip -r -j docs-sjmcl.zip out
+          ARTIFACT_HASH=$(sha256sum docs-sjmcl.zip | awk '{ print $1 }')
+          DEPLOY_TIMESTAMP=$(date +%s)
+          DEPLOY_HASH="${SECRET_KEY}${DEPLOY_TIMESTAMP}${ARTIFACT_HASH}"
+          DEPLOY_HASH=$(echo -n "$DEPLOY_HASH" | sha256sum | awk '{ print $1 }')
+          DEPLOY_HASH="${SECRET_KEY}${DEPLOY_HASH}"
+          DEPLOY_HASH=$(echo -n "$DEPLOY_HASH" | sha256sum | awk '{ print $1 }')
+          STATUS_CODE=`curl -X POST $DEPLOY_API \
+                            -F "deploy_project=${DEPLOY_PROJECT}" \
+                            -F "deploy_timestamp=${DEPLOY_TIMESTAMP}" \
+                            -F "deploy_hash=${DEPLOY_HASH}" \
+                            -F "deploy_artifact=@docs-sjmcl.zip" \
+                            -s \
+                            -o /dev/null \
+                            -w "%{http_code}"`
+          if [ "$STATUS_CODE" -ne 204 ]; then
+            echo "Deployment failed with status code $STATUS_CODE"
+            exit 1
+          else
+            echo "Deployment successful"
+          fi
