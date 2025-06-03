@@ -1,0 +1,10 @@
+.title {
+  font-family: Trebuchet MS, Arial, sans-serif !important;
+  font-size: 1.2rem;
+  font-weight: bold;
+  user-select: none;
+}
+
+.highlight {
+  color: #2b6cb0
+}

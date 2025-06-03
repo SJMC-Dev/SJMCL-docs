@@ -1,4 +1,5 @@
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
+import { TitleFullWithLogo } from './components/logo-title'
 import { Head } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
@@ -21,7 +22,7 @@ export const metadata = {
 // const banner = <Banner storageKey="some-key">Nextra 4.0 is released 🎉</Banner>
 const navbar = (
   <Navbar
-    logo={<b>SJMCL</b>}
+    logo={<TitleFullWithLogo />}
     projectLink="https://github.com/UNIkeEN/SJMCL"
   />
 )
