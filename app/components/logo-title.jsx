@@ -1,6 +1,6 @@
 import Image from "next/image";
 import styles from "../styles/logo-title.module.css";
-import logo from "../../../public/images/icons/Logo_128x128.png";
+import logo from "../../public/images/icons/Logo_128x128.png";
 
 export const TitleShort = (props) => {
   return (

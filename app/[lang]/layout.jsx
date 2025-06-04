@@ -1,5 +1,5 @@
 import { Footer, Layout, Navbar, LastUpdated } from 'nextra-theme-docs'
-import { TitleFullWithLogo } from './components/logo-title'
+import { TitleFullWithLogo } from '../components/logo-title'
 import { Head, Search } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import { localeResources } from '../../locales'
