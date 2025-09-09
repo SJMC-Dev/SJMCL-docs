@@ -35,10 +35,7 @@ jobs:
           zip -r docs-sjmcl.zip out
           ARTIFACT_HASH=$(sha256sum docs-sjmcl.zip | awk '{ print $1 }')
           DEPLOY_TIMESTAMP=$(date +%s)
-          DEPLOY_HASH="${SECRET_KEY}${DEPLOY_TIMESTAMP}${ARTIFACT_HASH}"
-          DEPLOY_HASH=$(echo -n "$DEPLOY_HASH" | sha256sum | awk '{ print $1 }')
-          DEPLOY_HASH="${SECRET_KEY}${DEPLOY_HASH}"
-          DEPLOY_HASH=$(echo -n "$DEPLOY_HASH" | sha256sum | awk '{ print $1 }')
+          DEPLOY_HASH=$(echo -n "${DEPLOY_TIMESTAMP}${ARTIFACT_HASH}" | openssl dgst -sha256 -hmac "$SECRET_KEY" | cut -d' ' -f2)
           STATUS_CODE=`curl -X POST $DEPLOY_API \
                             -F "deploy_project=${DEPLOY_PROJECT}" \
                             -F "deploy_timestamp=${DEPLOY_TIMESTAMP}" \
