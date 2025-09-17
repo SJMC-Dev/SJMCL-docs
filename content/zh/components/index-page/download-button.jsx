@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Button, HStack, VStack, Text } from "@chakra-ui/react";
 import { FaApple } from "react-icons/fa6";
 import { LuGrid2X2, LuArrowDownToLine } from "react-icons/lu";
-import DownloadAllVersionModal from "./download-all-version-modal";
 const DOWNLOAD_LINKS = {
   win32: { label: "下载 Windows (32位) 版", icon: <LuGrid2X2 /> },
   win64: { label: "下载 Windows (64位) 版", icon: <LuGrid2X2 /> },
@@ -18,7 +17,6 @@ export default function DownloadButton() {
   const [download, setDownload] = useState(DOWNLOAD_LINKS.fallback);
   const [latestVersion, setLatestVersion] = useState("Loading...");
   const [downloadLink, setDownloadLink] = useState("#");
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPlatformKey, setCurrentPlatformKey] = useState("fallback");
   const getLatestVersion = async () => {
     const response = await fetch(
@@ -114,18 +112,11 @@ export default function DownloadButton() {
             size="sm"
             fontWeight="normal"
             cursor={"pointer"}
-            onClick={() => setIsModalOpen(true)}
           >
             全部版本
           </Button>
         </HStack>
       </VStack>
-
-      <DownloadAllVersionModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        platformKey={currentPlatformKey}
-      />
     </>
   );
 }
