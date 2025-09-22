@@ -7,7 +7,7 @@ import {
 } from '@chakra-ui/react'
 import { LuArrowDownToLine } from 'react-icons/lu'
 
-const API = '/sjmcl/api-proxy/api-sjmcl/releases/latest'
+const API = 'https://mc.sjtu.cn/api-sjmcl/releases/latest'
 const MC_BASE = 'https://mc.sjtu.cn/sjmcl/releases/'
 
 const osOrder = { Windows: 1, macOS: 2, Linux: 3, other: 99 }
@@ -47,6 +47,22 @@ function humanSize(bytes) {
   while (s >= 1024 && i < units.length - 1) { s /= 1024; i++ }
   const v = s < 10 && i > 0 ? s.toFixed(2) : s < 100 ? s.toFixed(1) : Math.round(s)
   return `${v} ${units[i]}`
+}
+
+function shouldHighlightRow({ os, arch, name }) {
+  const n = (name || '').toLowerCase()
+  const isWinPortableExe =
+    os === 'Windows' &&
+    arch === 'x86_64' &&
+    /portable/i.test(n) &&
+    /\.exe$/i.test(n)
+
+  const isMacArmDmg =
+    os === 'macOS' &&
+    arch === 'aarch64' &&
+    /\.dmg$/i.test(n)
+
+  return isWinPortableExe || isMacArmDmg
 }
 
 export default function Latest() {
@@ -92,8 +108,20 @@ export default function Latest() {
   })
 
   const groups = Object.keys(osOrder)
-  .map(os => ({ os, items: rows.filter(r => r.os === os) }))
-  .filter(g => g.items.length > 0)
+    .map(os => {
+      const itemsOfOs = rows.filter(r => r.os === os)
+      if (itemsOfOs.length === 0) return null
+      const archMap = itemsOfOs.reduce((m, r) => {
+        (m[r.arch] ||= []).push(r)
+        return m
+      }, /** @type {Record<string, typeof itemsOfOs>} */({}))
+      const archGroups = Object.entries(archMap)
+        .sort((a, b) => (archOrder[a[0]] || 99) - (archOrder[b[0]] || 99))
+        .map(([arch, items]) => ({ arch, items }))
+      const rowCount = archGroups.reduce((sum, g) => sum + g.items.length, 0)
+      return { os, rowCount, archGroups }
+   })
+    .filter(Boolean)
 
   return (
   <VStack align="stretch" spacing={4}>
@@ -110,33 +138,41 @@ export default function Latest() {
             <Th>平台</Th>
             <Th>架构</Th>
             <Th>文件</Th>
-            <Th isNumeric>大小</Th>
+            <Th>大小</Th>
             <Th>下载</Th>
           </Tr>
         </Thead>
-        <Tbody>
-          {groups.map(group =>
-            group.items.map((r, idx) => (
-              <Tr key={r.name}>
-                {idx === 0 && (
-                  <Td rowSpan={group.items.length}>
-                    {group.os}
-                  </Td>
-                )}
-                <Td>{r.arch}</Td>
-                <Td>
-                  <CLink href={r.url} isExternal>{r.name}</CLink>
-                </Td>
-                <Td isNumeric>{humanSize(r.size)}</Td>
-                <Td>
-                  <Button as="a" href={r.url} size="sm" leftIcon={<LuArrowDownToLine />}>
-                    下载
-                  </Button>
-                </Td>
-              </Tr>
-            ))
-          )}
-        </Tbody>
+          <Tbody>
+            {groups.map(osGroup => (
+              osGroup.archGroups.flatMap((ag, agIdx) =>
+                ag.items.map((r, idx) => {
+                  const highlight = shouldHighlightRow({ os: osGroup.os, arch: ag.arch, name: r.name })
+                  return (
+                    <Tr key={`${osGroup.os}-${ag.arch}-${r.name}`}>
+                      {agIdx === 0 && idx === 0 && (
+                        <Td rowSpan={osGroup.rowCount}>{osGroup.os}</Td>
+                      )}
+                      {idx === 0 && (
+                        <Td rowSpan={ag.items.length}>{ag.arch}</Td>
+                      )}
+
+                       <Td bg={highlight ? 'yellow.50' : undefined}>
+                        <CLink href={r.url} isExternal>{r.name}</CLink>
+                      </Td>
+                      <Td bg={highlight ? 'yellow.50' : undefined}>
+                        {humanSize(r.size)}
+                      </Td>
+                       <Td bg={highlight ? 'yellow.50' : undefined}>
+                        <Button as="a" href={r.url} size="sm" leftIcon={<LuArrowDownToLine />}>
+                          下载
+                        </Button>
+                      </Td>
+                    </Tr>
+                  )
+                })
+              )
+            ))}
+          </Tbody>
       </Table>
     )}
   </VStack>
