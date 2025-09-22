@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Button, HStack, VStack, Text } from "@chakra-ui/react";
 import { FaApple } from "react-icons/fa6";
 import { LuGrid2X2, LuArrowDownToLine } from "react-icons/lu";
+import NextLink from 'next/link'
 const DOWNLOAD_LINKS = {
   win32: { label: "下载 Windows (32位) 版", icon: <LuGrid2X2 /> },
   win64: { label: "下载 Windows (64位) 版", icon: <LuGrid2X2 /> },
@@ -108,12 +109,13 @@ export default function DownloadButton() {
             最新版本 {latestVersion}
           </Text>
           <Button
+            as={NextLink}
+            href="/zh/latest"
             variant="link"
             size="sm"
             fontWeight="normal"
-            cursor={"pointer"}
           >
-            全部版本
+            全部文件
           </Button>
         </HStack>
       </VStack>
