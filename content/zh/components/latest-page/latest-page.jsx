@@ -49,23 +49,40 @@ function humanSize(bytes) {
   return `${v} ${units[i]}`
 }
 
-function shouldHighlightRow({ os, arch, name }) {
-  const n = (name || '').toLowerCase()
-  const isWinPortableExe =
-    os === 'Windows' &&
-    arch === 'x86_64' &&
-    /portable/i.test(n) &&
-    /\.exe$/i.test(n)
-
-  const isMacArmDmg =
-    os === 'macOS' &&
-    arch === 'aarch64' &&
-    /\.dmg$/i.test(n)
-
-  return isWinPortableExe || isMacArmDmg
-}
 
 export default function Latest() {
+  const [userPlatform, setUserPlatform] = useState({ os: '', arch: '' })
+  useEffect(() => {
+    const platform = navigator.platform.toLowerCase()
+    const ua = navigator.userAgent.toLowerCase()
+
+    let os = 'other'
+    if (platform.includes('win')) os = 'Windows'
+    else if (platform.includes('mac')) os = 'macOS'
+    else if (platform.includes('linux')) os = 'Linux'
+
+    let arch = '-'
+    if (ua.includes('x64') || ua.includes('x86_64') || ua.includes('win64') || ua.includes('wow64'))
+      arch = 'x86_64'
+    else if (ua.includes('arm') || ua.includes('aarch64') || ua.includes('apple'))
+      arch = 'aarch64'
+    else if (ua.includes('i686') || ua.includes('i386'))
+      arch = 'i686'
+
+    setUserPlatform({ os, arch })
+  }, [])
+
+  function shouldHighlightRow({ os, arch, name }) {
+    if (os !== userPlatform.os || arch !== userPlatform.arch) return false
+
+    const n = (name || '').toLowerCase()
+
+    if (os === 'Windows' && /portable/i.test(n) && /\.exe$/i.test(n)) return true
+
+    if (os === 'macOS' && /\.dmg$/i.test(n)) return true
+
+    return false
+  }
   const [state, setState] = useState({ loading: true, error: '', version: '', files: [] })
 
   useEffect(() => {
@@ -126,7 +143,16 @@ export default function Latest() {
   return (
   <VStack align="stretch" spacing={4}>
     <HStack justify="space-between">
-      {state.version && <Badge colorScheme="blue">v{state.version}</Badge>}
+      {state.version && (
+        <Badge 
+          colorScheme="blue" 
+          fontSize="l"
+          px={2} py={1}
+          mt={2}
+        >
+          v{state.version}
+        </Badge>
+      )}
     </HStack>
 
     {rows.length === 0 ? (
