@@ -110,7 +110,7 @@ export default function DownloadButton() {
           </Text>
           <Button
             as={NextLink}
-            href="/zh/latest"
+            href="/zh/docs/download"
             variant="link"
             size="sm"
             fontWeight="normal"
