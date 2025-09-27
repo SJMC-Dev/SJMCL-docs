@@ -12,11 +12,11 @@ export default {
     }
   },
   docs: {
-    title: 'Documentation',
+    title: 'Docs',
     type: 'page'
   },
   dev: {
-    title: 'Developers',
+    title: 'Developer',
     type: 'page'
   },
   blog: {
