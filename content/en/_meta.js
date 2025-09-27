@@ -1,3 +1,6 @@
+import { theme } from "@chakra-ui/react";
+import { Navbar } from "nextra-theme-docs";
+
 export default {
   index: {
     type: 'page',
@@ -9,11 +12,11 @@ export default {
     }
   },
   docs: {
-    title: 'Docs',
+    title: 'Documentation',
     type: 'page'
   },
   dev: {
-    title: 'Developer',
+    title: 'Developers',
     type: 'page'
   },
   blog: {
@@ -39,5 +42,9 @@ export default {
       timestamp: false,
       toc: false
     }
+  },
+  download: {
+    title: 'Download',
+    type: 'page',
   }
 }

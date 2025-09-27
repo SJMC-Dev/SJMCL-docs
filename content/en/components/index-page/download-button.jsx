@@ -6,12 +6,12 @@ import { FaApple } from "react-icons/fa6";
 import { LuGrid2X2, LuArrowDownToLine } from "react-icons/lu";
 import NextLink from "next/link";
 const DOWNLOAD_LINKS = {
-  win32: { label: "下载 Windows (32位) 版", icon: <LuGrid2X2 /> },
-  win64: { label: "下载 Windows (64位) 版", icon: <LuGrid2X2 /> },
-  macos_arm: { label: "下载 macOS (Apple Silicon) 版", icon: <FaApple /> },
-  macos_intel: { label: "下载 macOS (Intel) 版", icon: <FaApple /> },
-  linux: { label: "下载 Linux 版", icon: <LuArrowDownToLine /> },
-  fallback: { label: "下载", icon: <LuArrowDownToLine /> },
+  win32: { label: "Download Windows (32-bit)", icon: <LuGrid2X2 /> },
+  win64: { label: "Download Windows (64-bit)", icon: <LuGrid2X2 /> },
+  macos_arm: { label: "Download macOS (Apple Silicon)", icon: <FaApple /> },
+  macos_intel: { label: "Download macOS (Intel)", icon: <FaApple /> },
+  linux: { label: "Download Linux", icon: <LuArrowDownToLine /> },
+  fallback: { label: "Download", icon: <LuArrowDownToLine /> },
 };
 
 export default function DownloadButton() {
@@ -106,16 +106,16 @@ export default function DownloadButton() {
           }
         >
           <Text fontSize="sm" className="secondary-text">
-            最新版本 {latestVersion}
+            Latest: {latestVersion}
           </Text>
           <Button
             as={NextLink}
-            href="/zh/download/latest"
+            href="/en/download/latest"
             variant="link"
             size="sm"
             fontWeight="normal"
           >
-            全部文件
+            All files
           </Button>
         </HStack>
       </VStack>
