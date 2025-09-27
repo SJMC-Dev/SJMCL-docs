@@ -39,5 +39,9 @@ export default {
       timestamp: false,
       toc: false
     }
+  },
+  download: {
+    title: '下载',
+    type: 'page',
   }
 }

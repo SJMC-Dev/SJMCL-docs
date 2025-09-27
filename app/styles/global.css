@@ -1,3 +1,10 @@
 .secondary-text {
-    color: var(--chakra-colors-chakra-placeholder-color);
+  color: var(--chakra-colors-chakra-placeholder-color);
+}
+
+/* Also target .nextra-scrollbar that is two levels under a <nav> element
+     (nav > * > .nextra-scrollbar) and hide its last child to cover the
+     specific DOM structure used by the theme. */
+nav > .nextra-scrollbar > :last-child {
+  display: none !important;
 }
